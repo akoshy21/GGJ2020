@@ -10,11 +10,14 @@ public class ItemSlot : MonoBehaviour
     public void Slot(GameObject item)
     {
         item.transform.parent = null;
-        item.transform.parent = this.transform;
         item.transform.position = this.transform.position;
         if (this.GetComponent<HingeJoint>() != null)
         {
             GetComponent<HingeJoint>().connectedBody = item.GetComponent<Rigidbody>();
+        }
+        else
+        {
+            item.transform.parent = this.transform;
         }
 
         item.GetComponent<Rigidbody>().isKinematic = false;
