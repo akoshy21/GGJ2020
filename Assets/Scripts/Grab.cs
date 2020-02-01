@@ -10,6 +10,7 @@ public class Grab : MonoBehaviour
     public GameObject grabbedObj;
     public GameObject hand;
     public Transform holdPos;
+    public AnimationCurve tween;
 
     // Update is called once per frame
     void Update()
@@ -29,11 +30,13 @@ public class Grab : MonoBehaviour
                         if (grabbedObj == null)
                         {
                             Debug.Log("null");
-                            grabbedObj = hit.collider.gameObject;
+                            grabbedObj = hit.collider.gameObject;                 
                             grabbedObj.GetComponent<Item>().Unslot();
                             grabbedObj.GetComponent<Rigidbody>().isKinematic = true;
-                            grabbedObj.transform.position = holdPos.position;
-                            grabbedObj.transform.parent = hand.transform;
+
+                            StartCoroutine(Grabbing());
+                            //grabbedObj.transform.position = holdPos.position;
+                            
                         }
                         else
                         {
@@ -72,4 +75,18 @@ public class Grab : MonoBehaviour
             }
         }
     }
+
+    IEnumerator Grabbing()
+    {
+        float t = 0;
+        Vector3 startPos = grabbedObj.transform.position;
+        while (t < 1)
+        {
+            grabbedObj.transform.position = Vector3.LerpUnclamped(startPos, holdPos.transform.position, tween.Evaluate(t));
+            t += Time.deltaTime * 3.5f;
+            yield return 0;
+        }
+        grabbedObj.transform.parent = hand.transform;
+    }
+
 }
