@@ -41,11 +41,12 @@ public class Grab : MonoBehaviour
                         else
                         {
                             Debug.Log("reset");
-                            grabbedObj.transform.parent = null;
                             grabbedObj.GetComponent<Rigidbody>().isKinematic = false;
-                            grabbedObj = hit.collider.gameObject;
+                            grabbedObj.transform.parent = null;
                             grabbedObj.GetComponent<Item>().Unslot();
+                            grabbedObj = hit.collider.gameObject;
                             grabbedObj.GetComponent<Rigidbody>().isKinematic = true;
+                            StartCoroutine(Grabbing());
                         }
                     }
                     else if (hit.collider.GetComponent<ItemSlot>() != null)
@@ -61,15 +62,15 @@ public class Grab : MonoBehaviour
                             //play doesnt fit sound
                         }
                     }
-                    else
+                }
+                else
+                {
+                    if (grabbedObj != null)
                     {
-                        if (grabbedObj != null)
-                        {
-                            Debug.Log(hit.collider.name);
-                            grabbedObj.transform.parent = null;
-                            grabbedObj.GetComponent<Rigidbody>().isKinematic = false;
-                            grabbedObj = null;
-                        }
+                        Debug.Log(hit.collider.name);
+                        grabbedObj.GetComponent<Rigidbody>().isKinematic = false;
+                        grabbedObj.transform.parent = null;
+                        grabbedObj = null;
                     }
                 }
             }
@@ -79,7 +80,9 @@ public class Grab : MonoBehaviour
     IEnumerator Grabbing()
     {
         float t = 0;
+        grabbedObj.transform.rotation = grabbedObj.GetComponent<Item>().origRotation;
         Vector3 startPos = grabbedObj.transform.position;
+
         while (t < 1)
         {
             grabbedObj.transform.position = Vector3.LerpUnclamped(startPos, holdPos.transform.position, tween.Evaluate(t));

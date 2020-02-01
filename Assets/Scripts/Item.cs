@@ -8,6 +8,8 @@ public class Item : MonoBehaviour
     public size itemSize;
     public ItemSlot slot;
 
+    public Quaternion origRotation;
+
     public Item()
     {
     }
@@ -15,6 +17,11 @@ public class Item : MonoBehaviour
     public Item(size itemSz)
     {
         itemSize = itemSz;
+    }
+
+    void Awake()
+    {
+        origRotation = this.transform.rotation;
     }
 
     public bool Fits(ItemSlot slot)
